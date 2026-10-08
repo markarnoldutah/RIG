@@ -66,7 +66,7 @@ Update this table when the real layout lands.
 
 ## Coding Patterns (Backend)
 
-Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check current Microsoft documentation for .NET 10 changes before relying on older patterns.
+Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check current Microsoft documentation for .NET 10 changes before relying on older patterns — use the `microsoft-learn` MCP server (search docs, fetch a page, search code samples) rather than memory or web search.
 
 ### Endpoints (minimal APIs)
 

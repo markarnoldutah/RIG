@@ -28,7 +28,7 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 - `src/BigRig.Mobile` — .NET MAUI, CommunityToolkit.Mvvm, Mapsui.
 - `src/BigRig.Web` — Blazor WASM admin queue / trip planner, MapLibre via JS interop.
 - `pipeline/` (Python + dbt), `infra/` (Bicep), `tests/`.
-- Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check current Microsoft documentation for .NET 10 changes.
+- Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check current Microsoft documentation for .NET 10 changes, via the `microsoft-learn` MCP server.
 
 ## Architecture Rules
 
