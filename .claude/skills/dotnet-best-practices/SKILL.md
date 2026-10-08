@@ -54,4 +54,4 @@ The authoritative conventions are in `CLAUDE.md` and `.github/instructions/*.ins
 
 ## Output
 
-Group findings as **Critical / Major / Minor**, each with `file:line`, the rule, and a concrete fix. If the user asked for fixes, apply them, then run the affected tests (`dotnet test <project> -- --filter-class "*.<Name>Tests"`) and report the result. Don't commit.
+Group findings as **Critical / Major / Minor**, each with `file:line`, the rule, and a concrete fix. If the user asked for fixes, apply them, then run the affected tests (`dotnet test --project <project> -- --filter-class "*.<Name>Tests"`) and report the result. Don't commit.

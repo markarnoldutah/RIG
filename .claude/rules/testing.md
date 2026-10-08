@@ -10,11 +10,11 @@ applyTo: 'tests/**/*.cs'
 
 ## Stack
 
-- **Framework**: xUnit v3 (net10.0). Test assemblies are self-executing Microsoft.Testing.Platform (MTP) apps. `tests/Directory.Build.props` must set `TestingPlatformDotnetTestSupport` + `OutputType=Exe` so `dotnet test` routes through MTP. Without it, `dotnet test` takes the VSTest path, discovers nothing, and exits 0.
+- **Framework**: xUnit v3 4.x (net10.0) on Microsoft.Testing.Platform (MTP) v2. Test assemblies are self-executing MTP apps (`OutputType=Exe`, set in `tests/Directory.Build.props`). `dotnet test` uses MTP only because `global.json` sets `"test": { "runner": "Microsoft.Testing.Platform" }`. MTP v2 dropped the `TestingPlatformDotnetTestSupport` VSTest bridge, so don't add it back. `--minimum-expected-tests 1` makes a project with zero discovered tests fail.
 - **Mocking**: Moq 4.x — interfaces only.
-- **Assertions**: a fluent assertion library (FluentAssertions-style `Should()`); one choice for the whole repo.
+- **Assertions**: AwesomeAssertions (Apache-2.0 fork of FluentAssertions; same `Should()` API). FluentAssertions 8+ needs a paid commercial license, so don't add it.
 - **Integration**: `WebApplicationFactory` + Testcontainers (PostgreSQL with PostGIS image).
-- **Coverage**: `Microsoft.Testing.Extensions.CodeCoverage` — `dotnet test <csproj> --no-build -- --coverage --coverage-output-format cobertura`.
+- **Coverage**: `Microsoft.Testing.Extensions.CodeCoverage` — `dotnet test --project <csproj> --no-build -- --coverage --coverage-output-format cobertura`.
 - **Filtering**: MTP simple filters after `--`, e.g. `-- --filter-class "*.RigFitRuleTests"` or `-- --filter-method "*.Foo.Bar"` (wildcard `*` only at start/end). VSTest `--filter "FullyQualifiedName~..."` does not work.
 - Keep `Microsoft.Testing.Extensions.*` package versions aligned with the MTP major version that `xunit.v3` pulls in, or extensions fail with `TypeLoadException`.
 
