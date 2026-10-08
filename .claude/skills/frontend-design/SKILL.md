@@ -1,16 +1,16 @@
 ---
 name: frontend-design
-description: Design and build distinctive, production-grade UI for the Big-Rig Blazor WASM web app (admin queue, trip planner), MAUI screens, or standalone HTML pages, avoiding generic AI aesthetics. Use when the user asks to build, style, redesign, or beautify a page, component, screen, or layout.
+description: Design and build distinctive, production-grade UI for the RigRoom Blazor WASM web app (admin queue, trip planner), MAUI screens, or standalone HTML pages, avoiding generic AI aesthetics. Use when the user asks to build, style, redesign, or beautify a page, component, screen, or layout.
 ---
 
-Adapted from the `frontend-design` skill in Anthropic's public skills repository, tuned for Big-Rig's stack and users.
+Adapted from the `frontend-design` skill in Anthropic's public skills repository, tuned for RigRoom's stack and users.
 
 This skill guides creation of distinctive, production-grade interfaces that avoid generic "AI slop" aesthetics. Implement real working code with careful attention to aesthetic detail and deliberate creative choices.
 
 ## Know the context first
 
-- **Blazor WASM (`BigRig.Web`)**: Razor components with scoped `.razor.css`; maps via the MapLibre JS-interop wrapper. Follow `.github/instructions/blazor.instructions.md`.
-- **MAUI (`BigRig.Mobile`)**: XAML + CommunityToolkit.Mvvm, Mapsui map. Styles live in shared resource dictionaries, not inline.
+- **Blazor WASM (`RigRoom.Web`)**: Razor components with scoped `.razor.css`; maps via the MapLibre JS-interop wrapper. Follow `.github/instructions/blazor.instructions.md`.
+- **MAUI (`RigRoom.Mobile`)**: XAML + CommunityToolkit.Mvvm, Mapsui map. Styles live in shared resource dictionaries, not inline.
 - **Users**: RVers driving large rigs. Drive mode is read **at a glance, in a moving vehicle, often in bright sun** — large type, very high contrast, big touch targets (≥ 48 dp), minimal text, nothing that demands precise taps. The admin queue is a desk tool used for long sessions — dense but calm.
 - If a design system or brand tokens exist in the repo, use them. Otherwise define tokens (CSS custom properties / XAML resources) once and reference them everywhere — never inline ad-hoc colors.
 

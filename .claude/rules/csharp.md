@@ -54,8 +54,8 @@ applyTo: '**/*.cs'
 
 ## Shared Code Across API, MAUI and Blazor
 
-- Code in `BigRig.Domain` and `BigRig.Contracts` must not reference ASP.NET Core, EF Core, or MAUI types — it runs on the server, the phone, and in the browser.
-- Validators in `BigRig.Contracts` are the single source of validation rules; clients and the API both call them.
+- Code in `RigRoom.Domain` and `RigRoom.Contracts` must not reference ASP.NET Core, EF Core, or MAUI types — it runs on the server, the phone, and in the browser.
+- Validators in `RigRoom.Contracts` are the single source of validation rules; clients and the API both call them.
 
 ## Performance
 

@@ -24,7 +24,7 @@ applyTo: '**/*.razor, **/*.razor.cs, **/*.razor.css'
 
 - Use lifecycle methods appropriately (`OnInitializedAsync`, `OnParametersSetAsync`).
 - Use `@bind` for data binding and `EventCallback` for child-to-parent events, passing minimal data.
-- Use dependency injection for services; call the API only through the typed client in `BigRig.ApiClient`.
+- Use dependency injection for services; call the API only through the typed client in `RigRoom.ApiClient`.
 - Reduce unnecessary renders; use `ShouldRender()` where it measurably helps, and call `StateHasChanged()` deliberately.
 
 ## Maps (MapLibre via JS Interop)
@@ -36,7 +36,7 @@ applyTo: '**/*.razor, **/*.razor.cs, **/*.razor.css'
 ## Error Handling and Validation
 
 - Wrap page content in `ErrorBoundary`; show user-facing feedback on API failures.
-- Validate forms with the shared validators from `BigRig.Contracts` so client and API rules cannot drift.
+- Validate forms with the shared validators from `RigRoom.Contracts` so client and API rules cannot drift.
 
 ## State
 

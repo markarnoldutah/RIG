@@ -63,6 +63,6 @@ Run all server components as containers in one Azure Container Apps environment 
 
 ## References
 
-- **REF-001**: [PRD, Platform decisions](../ASOT/Big-Rig-Pullout-Map-PRD.md#platform-decisions)
-- **REF-002**: [Implementation Plan, Infrastructure and CI/CD](../ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md#infrastructure-and-cicd)
+- **REF-001**: [PRD, Platform decisions](../ASOT/RigRoom-PRD.md#platform-decisions)
+- **REF-002**: [Implementation Plan, Infrastructure and CI/CD](../ASOT/RigRoom-Implementation-Plan.md#infrastructure-and-cicd)
 - **REF-003**: [ADR-0003: Self-hosted Valhalla](adr-0003-valhalla-truck-routing.md)

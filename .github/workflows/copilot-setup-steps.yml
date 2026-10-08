@@ -38,8 +38,8 @@ jobs:
 
       # Skipped until the solution and pipeline exist; restore once they do.
       - name: Restore NuGet packages
-        if: hashFiles('BigRig.slnx') != ''
-        run: dotnet restore BigRig.slnx
+        if: hashFiles('RigRoom.slnx') != ''
+        run: dotnet restore RigRoom.slnx
 
       - name: Install pipeline dependencies
         if: hashFiles('pipeline/requirements.txt') != ''

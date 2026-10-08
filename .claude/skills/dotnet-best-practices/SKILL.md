@@ -13,7 +13,7 @@ The authoritative conventions are in `CLAUDE.md` and `.github/instructions/*.ins
 ## Checklist
 
 ### Structure & layering
-- `BigRig.Domain` / `BigRig.Contracts` reference no ASP.NET Core, EF Core, or MAUI types.
+- `RigRoom.Domain` / `RigRoom.Contracts` reference no ASP.NET Core, EF Core, or MAUI types.
 - Endpoint handlers are thin (caller → sealed service → mapper → `TypedResults`), grouped with `MapGroup` per feature, no `try/catch`.
 - Services are `sealed`, scoped, use `IUserContextAccessor` (never `HttpContext`), start with guard clauses, return entities.
 - Mappers are static extension classes, pure, start with `ArgumentNullException.ThrowIfNull()`.

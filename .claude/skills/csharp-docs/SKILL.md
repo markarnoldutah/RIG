@@ -7,7 +7,7 @@ description: Write or review C# XML documentation comments (summary, param, retu
 
 Apply to the files or scope the user names; otherwise to public types changed in the current git diff.
 
-- Public members get XML comments. Interfaces in `BigRig.Domain` / `BigRig.Contracts` and DTOs always do — DTO comments flow into the OpenAPI description.
+- Public members get XML comments. Interfaces in `RigRoom.Domain` / `RigRoom.Contracts` and DTOs always do — DTO comments flow into the OpenAPI description.
 - Document internal members when they are complex or not self-explanatory. Don't add boilerplate comments to obvious private code.
 - Explain **why** in `<remarks>` when a design decision isn't obvious (e.g. why a query stays in PostGIS, why a write is idempotent).
 

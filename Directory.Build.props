@@ -2,7 +2,7 @@
 
   <!--
     Settings shared by every .NET project in the repo. Target frameworks stay in each
-    csproj because BigRig.Mobile multi-targets (net10.0-android;net10.0-ios).
+    csproj because RigRoom.Mobile multi-targets (net10.0-android;net10.0-ios).
   -->
   <PropertyGroup>
     <LangVersion>14</LangVersion>

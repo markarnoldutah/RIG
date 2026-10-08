@@ -92,7 +92,7 @@ For simple issues:
 ## Deferred / Future-state Template
 
 For work being parked rather than done now. If it carries a revisit condition, also add it
-as a row in the **Decisions** table of `Docs/ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md`.
+as a row in the **Decisions** table of `Docs/ASOT/RigRoom-Implementation-Plan.md`.
 
 ```markdown
 ## Summary

@@ -6,7 +6,7 @@ paths:
 applyTo: 'tests/**/*.cs'
 ---
 
-# Big-Rig Testing Guidelines — xUnit v3 + Moq
+# RigRoom Testing Guidelines — xUnit v3 + Moq
 
 ## Stack
 
@@ -26,7 +26,7 @@ applyTo: 'tests/**/*.cs'
 
 ## Test File Placement
 
-- Mirror the source folder inside the test project, e.g. `src/BigRig.Api/Services/CheckInService.cs` → `tests/BigRig.Api.Tests/Services/CheckInServiceTests.cs`.
+- Mirror the source folder inside the test project, e.g. `src/RigRoom.Api/Services/CheckInService.cs` → `tests/RigRoom.Api.Tests/Services/CheckInServiceTests.cs`.
 - Shared test data lives in `tests/*/Fakes/`.
 
 ## Naming Convention

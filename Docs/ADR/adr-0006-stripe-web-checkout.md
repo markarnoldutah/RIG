@@ -57,6 +57,6 @@ Sell subscriptions through Stripe web checkout, linked from the app for US users
 
 ## References
 
-- **REF-001**: [PRD, Monetization](../ASOT/Big-Rig-Pullout-Map-PRD.md#monetization)
-- **REF-002**: [Implementation Plan, R1 Beta plan](../ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md#r1-beta-plan)
+- **REF-001**: [PRD, Monetization](../ASOT/RigRoom-PRD.md#monetization)
+- **REF-002**: [Implementation Plan, R1 Beta plan](../ASOT/RigRoom-Implementation-Plan.md#r1-beta-plan)
 - **REF-003**: [ADR-0004: Auth0 as the identity provider](adr-0004-auth0-identity-provider.md)
