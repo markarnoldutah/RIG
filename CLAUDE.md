@@ -16,8 +16,8 @@ One authoritative home per fact. A document earns its place by answering a quest
 
 - **Infra source of truth** will be the Bicep modules under `infra/`. Do not trust hand-drawn diagrams or older docs for Azure resource configuration. Nothing is created by hand in the portal.
 - Frozen snapshots (an `ARCHIVE/` or `Obsolete/` folder, if one is added) are **never** cited as current.
-- Per-language instruction files live in [.github/instructions/](.github/instructions/) (C#, ASP.NET, Blazor, Markdown, Testing).
-- Reusable agents and skills live in [.github/agents/](.github/agents/) and [.github/skills/](.github/skills/) (e.g. `code-review`, `bicep-plan`, `dotnet-maui`, `create-architectural-decision-record`). Output locations: ADRs in `Docs/ADR/`, implementation plans in `Docs/Plans/`, epic breakdowns in `Docs/Epics/`, Claude Code plans in `Docs/Claude_Plans/`.
+- Path-scoped rules (C#, ASP.NET, Blazor, Markdown, Testing) live in [.claude/rules/](.claude/rules/) and load when matching files are touched. Edit them there: `.github/instructions/*.instructions.md` are symlinks to the same files for Copilot.
+- Claude Code skills live in [.claude/skills/](.claude/skills/): `dotnet-best-practices`, `csharp-async`, `csharp-docs`, `appinsights-instrumentation`, `az-cost-optimize`, `frontend-design`. Copilot-format agents and remaining skills live in [.github/agents/](.github/agents/) and [.github/skills/](.github/skills/) (e.g. `code-review`, `bicep-plan`, `dotnet-maui`, `create-architectural-decision-record`). Output locations: ADRs in `Docs/ADR/`, implementation plans in `Docs/Plans/`, epic breakdowns in `Docs/Epics/`, Claude Code plans in `Docs/Claude_Plans/`.
 
 **Scope discipline.** Build the current release only. R0 is: rig profile, route planning on US-50 and two Utah corridors, corridor download, offline drive mode, manual check-ins with photos, admin verification queue. R1+ features (Cracker Barrel, background alerts, Stripe, web trip planner) are not built early unless the Implementation Plan says so (e.g. the share-alike flag is enforced in the schema from M1).
 
@@ -163,7 +163,7 @@ Order is load-bearing:
 
 ## Testing — TDD Is Mandatory
 
-Full rules in [.github/instructions/testing.instructions.md](.github/instructions/testing.instructions.md).
+Full rules in [.claude/rules/testing.md](.claude/rules/testing.md).
 
 **Red → Green → Refactor, in this order for every issue:**
 

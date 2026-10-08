@@ -370,3 +370,6 @@ FodyWeavers.xsd
 # Kept local; the deployment runbook belongs in Docs/ASOT/RVS_Infrastructure.md.
 scratch.azcli
 .DS_Store
+
+# Claude Code per-user settings (permissions); shared settings live in .claude/settings.json
+.claude/settings.local.json
