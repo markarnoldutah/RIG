@@ -15,18 +15,20 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 
 - Product canon is in `Docs/ASOT/`: `Big-Rig-Pullout-Map-Product-and-Data-Brief.md` (what this is, data sources, scoring), `Big-Rig-Pullout-Map-PRD.md` (**if a requirement isn't there, it isn't in scope**; each FR is scoped to its tagged release), `Big-Rig-Pullout-Map-Implementation-Plan.md` (milestones, sequencing, defaults for open decisions).
 - One authoritative home per fact. A new canon doc is registered here and in `CLAUDE.md` on the same commit.
+- Architecture decisions are ADRs in `Docs/ADR/` (`adr-NNNN-title-slug.md`, one per stack decision): 0001 native MAUI, 0002 PostgreSQL + PostGIS over Cosmos DB, 0003 Valhalla, 0004 Auth0, 0005 Azure Container Apps, 0006 Stripe web checkout. A reversed decision is marked Superseded by a new ADR, not rewritten.
 - Bicep under `infra/` is the source of truth for Azure resources. Nothing is created by hand in the portal.
 - Build the current release only (R0 now). Do not build R1+ features early unless the Implementation Plan says so.
 
 ## Project Structure
 
-- `src/BigRig.Domain` — rig-fit rule, confidence labels, linear referencing (NetTopologySuite). Zero infra dependencies.
+- Solution: `BigRig.slnx` (everything) and `BigRig.NoMobile.slnf` (all but Mobile, for CI and machines without the `maui` workload). `global.json` pins the SDK and selects the MTP test runner.
+- `src/BigRig.Domain` — rig-fit rule, confidence labels, linear referencing (NetTopologySuite). Zero infra dependencies and no project references (guarded by `DomainDependencyTests`).
 - `src/BigRig.Contracts` — DTOs + validators shared by API, MAUI, Blazor.
-- `src/BigRig.ApiClient` — typed HTTP client, offline outbox interfaces.
-- `src/BigRig.Data` — EF Core + NetTopologySuite (PostgreSQL + PostGIS), migrations.
-- `src/BigRig.Api` — ASP.NET Core 10 minimal APIs, one route group per feature.
-- `src/BigRig.Mobile` — .NET MAUI, CommunityToolkit.Mvvm, Mapsui.
-- `src/BigRig.Web` — Blazor WASM admin queue / trip planner, MapLibre via JS interop.
+- `src/BigRig.ApiClient` — typed HTTP client, offline outbox interfaces. References Contracts.
+- `src/BigRig.Data` — EF Core + NetTopologySuite (PostgreSQL + PostGIS), migrations. References Domain.
+- `src/BigRig.Api` — ASP.NET Core 10 minimal APIs, one route group per feature. References Domain, Contracts, Data.
+- `src/BigRig.Mobile` — .NET MAUI (`net10.0-android`, `net10.0-ios`), CommunityToolkit.Mvvm, Mapsui. References Domain, Contracts, ApiClient.
+- `src/BigRig.Web` — Blazor WASM admin queue / trip planner, MapLibre via JS interop. References Contracts, ApiClient.
 - `pipeline/` (Python + dbt), `infra/` (Bicep), `tests/`.
 - Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check current Microsoft documentation for .NET 10 changes, via the `microsoft-learn` MCP server.
 
@@ -76,6 +78,14 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 - Migrations run from the deploy pipeline, not at startup.
 - Pipeline-owned tables are read-only to the API.
 
+## dbt
+
+- `pipeline/dbt/` (dbt-postgres) reads `evidence` and `source`, never writes them, and produces scores.
+- Layers: `models/staging/` `stg_<source>__<entity>` views (rename/cast/filter only); `models/intermediate/` `evidence_aged`, `attribute_value`; `models/marts/` `site_score`. Plan model names are canon.
+- `snake_case` singular names matching app tables; keys `<entity>_id`; timestamps `_at_utc`; lengths with units (`usable_length_ft`); booleans `is_`/`has_`.
+- Seeds hold source weights and `attr_half_life`. Every model has a YAML entry with description and key/relationship tests; scores tested in 0–1 and must have evidence.
+- Models feeding resale or export tables exclude share-alike sources.
+
 ## Validation & Errors
 
 - Guard clauses in every service method. Shared validators live in `BigRig.Contracts`.
@@ -107,6 +117,7 @@ Red → Green → Refactor, not optional.
 - Never modify a failing test to make it pass — fix the implementation.
 - Never skip Refactor.
 - Python pipeline: pytest; scoring: dbt tests (scores in 0–1, every score has evidence).
+- xUnit v3 4.x on MTP v2: `dotnet test --project <csproj>` or `--solution BigRig.NoMobile.slnf`, MTP options after `--`. Assertions use AwesomeAssertions.
 
 ## CI/CD
 

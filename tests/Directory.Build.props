@@ -1,0 +1,30 @@
+<Project>
+
+  <!-- Inherit the repo-wide settings (nullable, implicit usings, C# 14). -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!--
+    xunit.v3 4.x runs on Microsoft.Testing.Platform (MTP) v2. Test assemblies are
+    self-executing MTP apps, so they must be Exe. `dotnet test` reaches them only because
+    global.json sets "test": { "runner": "Microsoft.Testing.Platform" }. MTP v2 removed the
+    VSTest bridge (TestingPlatformDotnetTestSupport); without the global.json opt-in,
+    `dotnet test` fails with "Testing with VSTest target is no longer supported".
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- Fail the run if a project discovers zero tests, instead of reporting green. -->
+    <TestingPlatformCommandLineArguments>--minimum-expected-tests 1</TestingPlatformCommandLineArguments>
+  </PropertyGroup>
+
+  <!--
+    MTP extensions shared by all test projects. Keep them on the MTP major that xunit.v3 pulls in
+    (v2 today), or they fail with TypeLoadException.
+      TrxReport    adds the report-trx option
+      CodeCoverage adds the coverage option
+  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.5.1" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
+  </ItemGroup>
+
+</Project>

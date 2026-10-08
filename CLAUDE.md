@@ -12,14 +12,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | [Big-Rig-Pullout-Map-PRD.md](Docs/ASOT/Big-Rig-Pullout-Map-PRD.md) | You're writing code. **If a requirement isn't here, it isn't in scope** — and an FR is only in scope for the release it is tagged with (R0, R1, …) |
 | [Big-Rig-Pullout-Map-Implementation-Plan.md](Docs/ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md) | You're deciding what to do next, sequencing milestones, or need a default for an open decision |
 
-One authoritative home per fact. A document earns its place by answering a question someone actually asks; register a new one in this table and in `.github/copilot-instructions.md` on the same commit. Architecture decisions are recorded as ADRs (one per stack decision) once the repo structure exists.
+One authoritative home per fact. A document earns its place by answering a question someone actually asks; register a new one in this table and in `.github/copilot-instructions.md` on the same commit.
+
+**Architecture decisions** are ADRs in [Docs/ADR/](Docs/ADR/), one per stack decision, named `adr-NNNN-title-slug.md` (template: the `create-architectural-decision-record` skill). A new stack decision gets a new ADR; a reversed one is marked Superseded, not rewritten.
+
+| ADR | Decision |
+| --- | --- |
+| [0001](Docs/ADR/adr-0001-native-maui-mobile-app.md) | Native .NET MAUI (XAML + MVVM), iOS and Android only, Mapsui maps |
+| [0002](Docs/ADR/adr-0002-postgresql-postgis-over-cosmos-db.md) | PostgreSQL Flexible Server + PostGIS, not Cosmos DB |
+| [0003](Docs/ADR/adr-0003-valhalla-truck-routing.md) | Self-hosted Valhalla truck costing; Azure Maps as fallback |
+| [0004](Docs/ADR/adr-0004-auth0-identity-provider.md) | Auth0, per-permission policies |
+| [0005](Docs/ADR/adr-0005-azure-container-apps-hosting.md) | Azure Container Apps for API, Valhalla, and pipeline jobs |
+| [0006](Docs/ADR/adr-0006-stripe-web-checkout.md) | Stripe web checkout for subscriptions (R1; nothing built in R0) |
 
 - **Infra source of truth** will be the Bicep modules under `infra/`. Do not trust hand-drawn diagrams or older docs for Azure resource configuration. Nothing is created by hand in the portal.
 - Frozen snapshots (an `ARCHIVE/` or `Obsolete/` folder, if one is added) are **never** cited as current.
 - Path-scoped rules (C#, ASP.NET, Blazor, Markdown, Testing) live in [.claude/rules/](.claude/rules/) and load when matching files are touched. Edit them there: `.github/instructions/*.instructions.md` are symlinks to the same files for Copilot.
-- Claude Code skills live in [.claude/skills/](.claude/skills/): `dotnet-best-practices`, `csharp-async`, `csharp-docs`, `appinsights-instrumentation`, `az-cost-optimize`, `frontend-design`. Copilot-format agents and remaining skills live in [.github/agents/](.github/agents/) and [.github/skills/](.github/skills/) (e.g. `code-review`, `bicep-plan`, `dotnet-maui`, `create-architectural-decision-record`). Output locations: ADRs in `Docs/ADR/`, implementation plans in `Docs/Plans/`, epic breakdowns in `Docs/Epics/`, Claude Code plans in `Docs/Claude_Plans/`.
+- Claude Code skills live in [.claude/skills/](.claude/skills/): `dotnet-best-practices`, `csharp-async`, `csharp-docs`, `appinsights-instrumentation`, `az-cost-optimize`, `frontend-design`.
+  Copilot-format agents and remaining skills live in [.github/agents/](.github/agents/) and [.github/skills/](.github/skills/) (e.g. `code-review`, `bicep-plan`, `dotnet-maui`, `create-architectural-decision-record`).
+  Output locations: ADRs in `Docs/ADR/`, implementation plans in `Docs/Plans/`, epic breakdowns in `Docs/Epics/`, Claude Code plans in `Docs/Claude_Plans/`.
 
-**Scope discipline.** Build the current release only. R0 is: rig profile, route planning on US-50 and two Utah corridors, corridor download, offline drive mode, manual check-ins with photos, admin verification queue. R1+ features (Cracker Barrel, background alerts, Stripe, web trip planner) are not built early unless the Implementation Plan says so (e.g. the share-alike flag is enforced in the schema from M1).
+**Scope discipline.** Build the current release only. R0 is: rig profile, route planning on US-50 and two Utah corridors, corridor download, offline drive mode, manual check-ins with photos, admin verification queue.
+R1+ features (Cracker Barrel, background alerts, Stripe, web trip planner) are not built early unless the Implementation Plan says so (e.g. the share-alike flag is enforced in the schema from M1).
 
 ## Working an Issue
 
@@ -34,24 +48,27 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 
 **Never commit or push automatically.** Do the work, leave the changes in the working tree, and stop there. Run `git commit` or `git push` only when I explicitly ask for it in that same message. Creating a branch, "executing" an issue, or being told to "make the change" is **not** permission to commit — wait for an explicit "commit this" / "push it" instruction.
 
-## Repo Layout (planned)
+## Repo Layout
 
-One monorepo holds the .NET solution, the Python pipeline, dbt, and Bicep, so one PR can change a contract and both its producer and consumer. Use the **SLNX** solution format (`dotnet` CLI handles it; older `dotnet sln` subcommands may not).
+One monorepo holds the .NET solution, the Python pipeline, dbt, and Bicep, so one PR can change a contract and both its producer and consumer. The repo root is the plan's `bigrig/` folder, and the plan's `docs/` is `Docs/`. Use the **SLNX** solution format (`dotnet` CLI handles it; older `dotnet sln` subcommands may not).
 
-| Path | Role |
-| --- | --- |
-| `src/BigRig.Domain` | Rig profile, rig-fit rule, confidence labels, linear referencing (NetTopologySuite). **Zero infra dependencies.** |
-| `src/BigRig.Contracts` | DTOs + validation shared by API, MAUI, and Blazor |
-| `src/BigRig.ApiClient` | Typed HTTP client, offline outbox interfaces |
-| `src/BigRig.Data` | EF Core + NetTopologySuite, migrations |
-| `src/BigRig.Api` | ASP.NET Core 10 **minimal APIs**, one route group per feature |
-| `src/BigRig.Mobile` | .NET MAUI, XAML + CommunityToolkit.Mvvm, Mapsui |
-| `src/BigRig.Web` | Blazor WASM: admin queue (R0), trip planner (R1); MapLibre via JS interop |
-| `pipeline/` | Python: ingest, candidates, imagery, terrain, packs; `pipeline/dbt/` for scoring |
-| `infra/` | Bicep modules + per-environment parameter files |
-| `tests/` | .NET unit + integration tests (Testcontainers PostGIS) |
+| Path | Role | References |
+| --- | --- | --- |
+| `src/BigRig.Domain` | Rig profile, rig-fit rule, confidence labels, linear referencing (NetTopologySuite). **Zero infra dependencies** (guarded by `DomainDependencyTests`). | — |
+| `src/BigRig.Contracts` | DTOs + validation shared by API, MAUI, and Blazor | — |
+| `src/BigRig.ApiClient` | Typed HTTP client, offline outbox interfaces | Contracts |
+| `src/BigRig.Data` | EF Core + NetTopologySuite, migrations | Domain |
+| `src/BigRig.Api` | ASP.NET Core 10 **minimal APIs**, one route group per feature | Domain, Contracts, Data |
+| `src/BigRig.Mobile` | .NET MAUI, XAML + CommunityToolkit.Mvvm, Mapsui; `net10.0-android` + `net10.0-ios` | Domain, Contracts, ApiClient |
+| `src/BigRig.Web` | Blazor WASM: admin queue (R0), trip planner (R1); MapLibre via JS interop | Contracts, ApiClient |
+| `pipeline/` | Python: `ingest/`, `candidates/`, `imagery/`, `terrain/`, `packs/`; `dbt/` for scoring | — |
+| `infra/` | Bicep modules + per-environment parameter files | — |
+| `tests/` | .NET unit + integration tests (Testcontainers PostGIS); `BigRig.{Project}.Tests` | Project under test |
+| `Docs/` | `ASOT/` canon, `ADR/`, field protocol, plans | — |
 
-Update this table when the real layout lands.
+Root build files: `BigRig.slnx` (everything), `BigRig.NoMobile.slnf` (everything except `BigRig.Mobile`, for CI and machines without the `maui` workload), `global.json` (SDK pin + MTP test runner), `Directory.Build.props` (nullable, implicit usings, C# 14, code style enforced in build). Target frameworks stay in each csproj because Mobile multi-targets.
+
+Mobile references Domain because drive mode runs the rig-fit rule and route projection on the device with no network.
 
 ## Architecture Rules Already Decided
 
@@ -109,6 +126,17 @@ Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check 
 - Migrations are generated with `dotnet ef migrations add` and committed. **Never edit a migration that has been applied to any shared environment** — add a new one.
 - Migrations run from the deploy pipeline, not at app startup.
 - Tables written by the pipeline/dbt are read-only from the API's point of view.
+
+### dbt Conventions
+
+dbt lives in `pipeline/dbt/` (dbt-postgres) and turns `evidence` into scores. It reads `evidence` and `source` and never writes them.
+
+- **Three model layers, one folder each.** `models/staging/` holds one `stg_<source>__<entity>` view per raw table (rename, cast, and filter only; no joins or business logic). `models/intermediate/` holds `evidence_aged` (half-life decay) and `attribute_value` (winning value per attribute, contested flag).
+  `models/marts/` holds `site_score` (physical-fit and permission scores plus the maximum rig length each site fits). Model names in the Implementation Plan are canon; don't rename them.
+- **Names** are `snake_case`, singular nouns matching the app tables (`site`, `evidence`, `score`, not `sites`). Keys are `<entity>_id`; timestamps end `_at_utc`; lengths carry their unit (`usable_length_ft`); booleans start `is_` or `has_`; confidences in 0–1 end `_confidence` or `_score`.
+- **Seeds** in `seeds/` hold reference data the brief defines: source weights and `attr_half_life`. Changing a seed changes scores, so it goes through a PR like code.
+- **Every model** has a YAML entry with a description, `unique` + `not_null` on its key, and `relationships` to its parents. Score columns get a 0–1 range test, and every `site_score` row must have evidence behind it.
+- **Licensing:** models that feed resale or export tables filter out sources with the share-alike flag set. Never import OSM-derived data into resale tables.
 
 ### Validation
 
@@ -176,20 +204,23 @@ Naming: `MethodName_Scenario_ExpectedResult`. **Never:** write production code b
 
 Pipeline and scoring: pytest for each state mapper (against saved real layer samples) and for scoring fixtures with known answers; dbt tests assert scores stay in 0–1 and every score has evidence behind it.
 
-**Microsoft.Testing.Platform gotcha (from RVS):** with xUnit v3, `dotnet test` must route through MTP. Set `TestingPlatformDotnetTestSupport` and `OutputType=Exe` in `tests/Directory.Build.props`, and pass coverage/trx/filter flags **after `--`** (`-- --coverage`, `-- --filter-class "*.FooTests"`). Without it, `dotnet test` takes the VSTest path, discovers nothing, and exits 0 — a green CI run with zero tests.
+**Microsoft.Testing.Platform gotcha (from RVS, updated for MTP v2):** xUnit v3 4.x runs on MTP v2, which removed the VSTest bridge (`TestingPlatformDotnetTestSupport`). `dotnet test` reaches the tests only because `global.json` sets `"test": { "runner": "Microsoft.Testing.Platform" }`; never remove it.
+In this mode, pass a project with `--project` and a solution with `--solution` (a bare path argument no longer works), and put MTP options after `--` (`-- --coverage`, `-- --filter-class "*.FooTests"`). `tests/Directory.Build.props` sets `OutputType=Exe` and `--minimum-expected-tests 1`, so a project that discovers zero tests fails instead of passing green.
 
 ## Common Commands
 
-Development is on macOS (zsh, VS Code). Fill in once projects exist.
+Development is on macOS (zsh, VS Code).
 
 ```bash
 dotnet restore BigRig.slnx
-dotnet build BigRig.slnx --configuration Release
-dotnet test tests/<Project>/<Project>.csproj --configuration Release --no-build -- --coverage --coverage-output-format cobertura
-dotnet test tests/<Project>/<Project>.csproj --configuration Release --no-build -- --filter-class "*.SomeTests"
+dotnet build BigRig.slnx --configuration Release              # needs the maui workload + platform SDKs
+dotnet build BigRig.NoMobile.slnf --configuration Release     # everything except Mobile
+dotnet test --solution BigRig.NoMobile.slnf --configuration Release
+dotnet test --project tests/<Project>/<Project>.csproj --configuration Release --no-build -- --coverage --coverage-output-format cobertura
+dotnet test --project tests/<Project>/<Project>.csproj --configuration Release --no-build -- --filter-class "*.SomeTests"
 ```
 
-Blazor WASM needs `dotnet workload install wasm-tools`; MAUI needs the `maui` workload (iOS builds need Xcode).
+Blazor WASM builds without extra workloads; `wasm-tools` is needed only for AOT or IL relinking on publish. MAUI needs the `maui` workload, a JDK and Android SDK for Android, and for iOS a current Xcode, which needs a recent macOS.
 
 ## CI/CD Methodology
 

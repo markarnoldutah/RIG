@@ -20,4 +20,4 @@ applyTo: '**/*.md'
 - Keep lines under 400 characters.
 - Use **bold** for emphasis on key terms in lists and tables.
 - Use backticks for inline code, file names, class names, and CLI commands.
-- No YAML front matter except where a tool requires it: Claude Code rules (`.claude/rules/*.md`: `paths`, plus `description`/`applyTo` for Copilot), skills (`SKILL.md`: `name`, `description`), and Copilot agents (`.agent.md`).
+- No YAML front matter except where a tool requires it: Claude Code rules (`.claude/rules/*.md`: `paths`, plus `description`/`applyTo` for Copilot), skills (`SKILL.md`: `name`, `description`), Copilot agents (`.agent.md`), and ADRs (`Docs/ADR/adr-*.md`, front matter per the `create-architectural-decision-record` skill).
