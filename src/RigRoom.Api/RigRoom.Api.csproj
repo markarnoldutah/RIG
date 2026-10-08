@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="RigRoom.Api.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RigRoom.Domain\RigRoom.Domain.csproj" />
+    <ProjectReference Include="..\RigRoom.Contracts\RigRoom.Contracts.csproj" />
+    <ProjectReference Include="..\RigRoom.Data\RigRoom.Data.csproj" />
+  </ItemGroup>
+
+</Project>

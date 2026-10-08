@@ -1,4 +1,4 @@
-# Copilot Instructions — Big-Rig Pullout Map
+# Copilot Instructions — RigRoom
 
 ## Working an Issue
 
@@ -13,7 +13,7 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 
 ## Project Documentation
 
-- Product canon is in `Docs/ASOT/`: `Big-Rig-Pullout-Map-Product-and-Data-Brief.md` (what this is, data sources, scoring), `Big-Rig-Pullout-Map-PRD.md` (**if a requirement isn't there, it isn't in scope**; each FR is scoped to its tagged release), `Big-Rig-Pullout-Map-Implementation-Plan.md` (milestones, sequencing, defaults for open decisions).
+- Product canon is in `Docs/ASOT/`: `RigRoom-Product-and-Data-Brief.md` (what this is, data sources, scoring), `RigRoom-PRD.md` (**if a requirement isn't there, it isn't in scope**; each FR is scoped to its tagged release), `RigRoom-Implementation-Plan.md` (milestones, sequencing, defaults for open decisions).
 - One authoritative home per fact. A new canon doc is registered here and in `CLAUDE.md` on the same commit.
 - Architecture decisions are ADRs in `Docs/ADR/` (`adr-NNNN-title-slug.md`, one per stack decision): 0001 native MAUI, 0002 PostgreSQL + PostGIS over Cosmos DB, 0003 Valhalla, 0004 Auth0, 0005 Azure Container Apps, 0006 Stripe web checkout. A reversed decision is marked Superseded by a new ADR, not rewritten.
 - Bicep under `infra/` is the source of truth for Azure resources. Nothing is created by hand in the portal.
@@ -21,14 +21,14 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 
 ## Project Structure
 
-- Solution: `BigRig.slnx` (everything) and `BigRig.NoMobile.slnf` (all but Mobile, for CI and machines without the `maui` workload). `global.json` pins the SDK and selects the MTP test runner.
-- `src/BigRig.Domain` — rig-fit rule, confidence labels, linear referencing (NetTopologySuite). Zero infra dependencies and no project references (guarded by `DomainDependencyTests`).
-- `src/BigRig.Contracts` — DTOs + validators shared by API, MAUI, Blazor.
-- `src/BigRig.ApiClient` — typed HTTP client, offline outbox interfaces. References Contracts.
-- `src/BigRig.Data` — EF Core + NetTopologySuite (PostgreSQL + PostGIS), migrations. References Domain.
-- `src/BigRig.Api` — ASP.NET Core 10 minimal APIs, one route group per feature. References Domain, Contracts, Data.
-- `src/BigRig.Mobile` — .NET MAUI (`net10.0-android`, `net10.0-ios`), CommunityToolkit.Mvvm, Mapsui. References Domain, Contracts, ApiClient.
-- `src/BigRig.Web` — Blazor WASM admin queue / trip planner, MapLibre via JS interop. References Contracts, ApiClient.
+- Solution: `RigRoom.slnx` (everything) and `RigRoom.NoMobile.slnf` (all but Mobile, for CI and machines without the `maui` workload). `global.json` pins the SDK and selects the MTP test runner.
+- `src/RigRoom.Domain` — rig-fit rule, confidence labels, linear referencing (NetTopologySuite). Zero infra dependencies and no project references (guarded by `DomainDependencyTests`).
+- `src/RigRoom.Contracts` — DTOs + validators shared by API, MAUI, Blazor.
+- `src/RigRoom.ApiClient` — typed HTTP client, offline outbox interfaces. References Contracts.
+- `src/RigRoom.Data` — EF Core + NetTopologySuite (PostgreSQL + PostGIS), migrations. References Domain.
+- `src/RigRoom.Api` — ASP.NET Core 10 minimal APIs, one route group per feature. References Domain, Contracts, Data.
+- `src/RigRoom.Mobile` — .NET MAUI (`net10.0-android`, `net10.0-ios`), CommunityToolkit.Mvvm, Mapsui. References Domain, Contracts, ApiClient.
+- `src/RigRoom.Web` — Blazor WASM admin queue / trip planner, MapLibre via JS interop. References Contracts, ApiClient.
 - `pipeline/` (Python + dbt), `infra/` (Bicep), `tests/`.
 - Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check current Microsoft documentation for .NET 10 changes, via the `microsoft-learn` MCP server.
 
@@ -68,7 +68,7 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 ## Entities & DTOs
 
 - Entities inherit abstract `EntityBase`; `init`-only `Id`, `CreatedAtUtc`, `CreatedByUserId`; `MarkAsUpdated(userId)` stamps update audit fields.
-- DTOs are `record`s in `BigRig.Contracts`: `{Entity}CreateRequestDto`, `{Entity}UpdateRequestDto`, `{Entity}SearchRequestDto`, `{Entity}DetailResponseDto`, `{Entity}SummaryResponseDto`.
+- DTOs are `record`s in `RigRoom.Contracts`: `{Entity}CreateRequestDto`, `{Entity}UpdateRequestDto`, `{Entity}SearchRequestDto`, `{Entity}DetailResponseDto`, `{Entity}SummaryResponseDto`.
 - `PagedResult<T>` sealed record: `Page`, `PageSize`, `TotalCount`, `Items`.
 - Never expose entity types in API responses.
 
@@ -88,7 +88,7 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 
 ## Validation & Errors
 
-- Guard clauses in every service method. Shared validators live in `BigRig.Contracts`.
+- Guard clauses in every service method. Shared validators live in `RigRoom.Contracts`.
 - Block `<`, `>`, `;`, `'`, `"`, `\`, `\0` in free-text search; enforce max lengths; page size cap 100.
 - 422 for validation errors, 400 for unparsable input.
 - Global `IExceptionHandler` + ProblemDetails: `ArgumentException` → 400, `UnauthorizedAccessException` → 401, `KeyNotFoundException` → 404, `ConflictException` → 409, else 500. Include an `errorId` GUID that is also logged; never expose internals outside Development.
@@ -117,7 +117,7 @@ Red → Green → Refactor, not optional.
 - Never modify a failing test to make it pass — fix the implementation.
 - Never skip Refactor.
 - Python pipeline: pytest; scoring: dbt tests (scores in 0–1, every score has evidence).
-- xUnit v3 4.x on MTP v2: `dotnet test --project <csproj>` or `--solution BigRig.NoMobile.slnf`, MTP options after `--`. Assertions use AwesomeAssertions.
+- xUnit v3 4.x on MTP v2: `dotnet test --project <csproj>` or `--solution RigRoom.NoMobile.slnf`, MTP options after `--`. Assertions use AwesomeAssertions.
 
 ## CI/CD
 

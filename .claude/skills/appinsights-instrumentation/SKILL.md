@@ -1,11 +1,11 @@
 ---
 name: appinsights-instrumentation
-description: Add or fix Azure Application Insights telemetry (OpenTelemetry) for the BigRig API, Container Apps pipeline jobs, or the Bicep that provisions App Insights. Use when the user asks to add telemetry, tracing, logging to Azure Monitor, App Insights, or observability.
+description: Add or fix Azure Application Insights telemetry (OpenTelemetry) for the RigRoom API, Container Apps pipeline jobs, or the Bicep that provisions App Insights. Use when the user asks to add telemetry, tracing, logging to Azure Monitor, App Insights, or observability.
 ---
 
 # App Insights Instrumentation
 
-Instrument Big-Rig services to send traces, metrics, and logs to Azure Application Insights through the Azure Monitor OpenTelemetry distro.
+Instrument RigRoom services to send traces, metrics, and logs to Azure Application Insights through the Azure Monitor OpenTelemetry distro.
 
 ## Ground rules (from CLAUDE.md)
 
@@ -20,10 +20,10 @@ Read the code to determine which of these applies; ask only if it is genuinely u
 
 | Component | Hosting | Approach |
 | --- | --- | --- |
-| `BigRig.Api` (ASP.NET Core 10) | Azure Container Apps | `Azure.Monitor.OpenTelemetry.AspNetCore` |
+| `RigRoom.Api` (ASP.NET Core 10) | Azure Container Apps | `Azure.Monitor.OpenTelemetry.AspNetCore` |
 | Python pipeline jobs | Container Apps Jobs | `azure-monitor-opentelemetry` |
-| `BigRig.Web` (Blazor WASM) | Static hosting | Usually not instrumented directly; rely on API-side telemetry. Ask before adding browser SDKs. |
-| `BigRig.Mobile` (MAUI) | Device | App Insights is not a mobile crash/analytics tool. Raise this with the user rather than wiring it in. |
+| `RigRoom.Web` (Blazor WASM) | Static hosting | Usually not instrumented directly; rely on API-side telemetry. Ask before adding browser SDKs. |
+| `RigRoom.Mobile` (MAUI) | Device | App Insights is not a mobile crash/analytics tool. Raise this with the user rather than wiring it in. |
 
 ## Step 2: Provision App Insights in Bicep
 
@@ -34,7 +34,7 @@ param location string = resourceGroup().location
 param environmentName string
 
 resource logs 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: 'log-bigrig-${environmentName}'
+  name: 'log-rigroom-${environmentName}'
   location: location
   properties: {
     sku: { name: 'PerGB2018' }
@@ -44,7 +44,7 @@ resource logs 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
 }
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: 'appi-bigrig-${environmentName}'
+  name: 'appi-rigroom-${environmentName}'
   location: location
   kind: 'web'
   properties: {
@@ -61,7 +61,7 @@ Pass the connection string into each container app / job as a secret-backed envi
 ## Step 3: Instrument the ASP.NET Core API
 
 ```bash
-dotnet add src/BigRig.Api package Azure.Monitor.OpenTelemetry.AspNetCore
+dotnet add src/RigRoom.Api package Azure.Monitor.OpenTelemetry.AspNetCore
 ```
 
 ```csharp
@@ -77,7 +77,7 @@ if (!string.IsNullOrWhiteSpace(builder.Configuration["APPLICATIONINSIGHTS_CONNEC
 - `UseAzureMonitor()` reads `APPLICATIONINSIGHTS_CONNECTION_STRING` itself and enables ASP.NET Core, HttpClient, and `ILogger` export.
 - Add EF Core / Npgsql tracing (`Npgsql.OpenTelemetry` → `AddNpgsql()`) when database spans are wanted; make sure SQL parameter values are not recorded.
 - Write a `PiiFilterActivityProcessor : BaseProcessor<Activity>` that strips or coarsens tags carrying coordinates, emails, or SAS URLs (query strings) in `OnEnd`. Cover it with a unit test.
-- Set `service.name` per component (e.g. `bigrig-api`) via `ConfigureResource` so the Application Map is readable.
+- Set `service.name` per component (e.g. `rigroom-api`) via `ConfigureResource` so the Application Map is readable.
 - Keep logging via `ILogger` message templates; don't add a second logging pipeline.
 
 ## Step 4: Instrument Python pipeline jobs

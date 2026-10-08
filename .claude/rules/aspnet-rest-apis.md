@@ -2,15 +2,15 @@
 description: 'Guidelines for building REST APIs with ASP.NET Core minimal APIs'
 # Claude Code reads `paths`; GitHub Copilot reads `applyTo` (via the symlink in .github/instructions/).
 paths:
-  - "src/BigRig.Api/**/*.cs"
-  - "src/BigRig.Api/**/*.json"
-  - "tests/BigRig.Api*/**/*.cs"
-applyTo: 'src/BigRig.Api/**/*.cs, src/BigRig.Api/**/*.json, tests/BigRig.Api*/**/*.cs'
+  - "src/RigRoom.Api/**/*.cs"
+  - "src/RigRoom.Api/**/*.json"
+  - "tests/RigRoom.Api*/**/*.cs"
+applyTo: 'src/RigRoom.Api/**/*.cs, src/RigRoom.Api/**/*.json, tests/RigRoom.Api*/**/*.cs'
 ---
 
 # ASP.NET Core API Development
 
-The API (`BigRig.Api`) uses ASP.NET Core 10 **minimal APIs**, not controllers. Project-specific patterns are in `CLAUDE.md` (mirrored in `.github/copilot-instructions.md`); this file covers general API practice.
+The API (`RigRoom.Api`) uses ASP.NET Core 10 **minimal APIs**, not controllers. Project-specific patterns are in `CLAUDE.md` (mirrored in `.github/copilot-instructions.md`); this file covers general API practice.
 
 ## API Design
 
@@ -28,7 +28,7 @@ The API (`BigRig.Api`) uses ASP.NET Core 10 **minimal APIs**, not controllers. P
 
 ## Validation and Error Handling
 
-- Validate request DTOs with the shared validators in `BigRig.Contracts`.
+- Validate request DTOs with the shared validators in `RigRoom.Contracts`.
 - One global `IExceptionHandler` with `AddProblemDetails()` produces RFC 7807 responses; handlers contain no `try/catch`.
 - Never leak stack traces or internal messages outside Development.
 

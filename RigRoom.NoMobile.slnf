@@ -1,0 +1,14 @@
+{
+  "solution": {
+    "path": "RigRoom.slnx",
+    "projects": [
+      "src/RigRoom.Domain/RigRoom.Domain.csproj",
+      "src/RigRoom.Contracts/RigRoom.Contracts.csproj",
+      "src/RigRoom.ApiClient/RigRoom.ApiClient.csproj",
+      "src/RigRoom.Data/RigRoom.Data.csproj",
+      "src/RigRoom.Api/RigRoom.Api.csproj",
+      "src/RigRoom.Web/RigRoom.Web.csproj",
+      "tests/RigRoom.Domain.Tests/RigRoom.Domain.Tests.csproj"
+    ]
+  }
+}

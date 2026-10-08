@@ -5,7 +5,7 @@ description: Analyze the Bicep in infra/ and the deployed Azure resources for co
 
 # Azure Cost Optimize
 
-Analyze Big-Rig's Bicep and deployed Azure resources, recommend cost savings with evidence, and — only after the user confirms — create one GitHub issue per optimization plus one epic.
+Analyze RigRoom's Bicep and deployed Azure resources, recommend cost savings with evidence, and — only after the user confirms — create one GitHub issue per optimization plus one epic.
 
 ## Ground rules
 
@@ -18,7 +18,7 @@ Analyze Big-Rig's Bicep and deployed Azure resources, recommend cost savings wit
 
 ```bash
 az account show --query "{sub:id, name:name}" -o table
-az group list --query "[?contains(name,'bigrig')].name" -o tsv
+az group list --query "[?contains(name,'rigroom')].name" -o tsv
 az resource list -g <rg> --query "[].{name:name,type:type,sku:sku.name,location:location}" -o table
 ```
 
@@ -64,7 +64,7 @@ Document: resource → current SKU → estimated monthly cost → pricing source
 
 ## Step 4: Recommend
 
-Patterns that fit Big-Rig's stack:
+Patterns that fit RigRoom's stack:
 
 - **Container Apps**: API and Valhalla at `minReplicas: 0` in dev (R0 plan); right-size CPU/memory from metrics; Consumption profile unless a dedicated profile is justified; jobs sized to their actual peak.
 - **PostgreSQL Flexible Server**: Burstable tier for dev/prod in R0; stop the dev server outside working hours (scheduled automation, declared in Bicep/workflow); no HA or geo-redundant backup in dev; backup retention at the minimum that is acceptable.

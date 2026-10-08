@@ -57,6 +57,6 @@ Run Valhalla in a container on Azure Container Apps, using truck costing paramet
 
 ## References
 
-- **REF-001**: [PRD, FR-03](../ASOT/Big-Rig-Pullout-Map-PRD.md#functional-requirements)
-- **REF-002**: [Implementation Plan, Risks, spikes and fallbacks](../ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md#risks-spikes-and-fallbacks)
+- **REF-001**: [PRD, FR-03](../ASOT/RigRoom-PRD.md#functional-requirements)
+- **REF-002**: [Implementation Plan, Risks, spikes and fallbacks](../ASOT/RigRoom-Implementation-Plan.md#risks-spikes-and-fallbacks)
 - **REF-003**: [ADR-0005: Azure Container Apps hosting](adr-0005-azure-container-apps-hosting.md)

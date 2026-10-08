@@ -11,6 +11,6 @@ Python jobs and dbt models that turn public data, imagery, and field reports int
 | `packs/` | Planetiler basemap pack plus SQLite site pack per corridor | Blob Storage |
 | `dbt/` | `evidence` to attribute values to scores | `score` |
 
-Build order, stage contracts, and the scoring formula are in the [Implementation Plan](../Docs/ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md#data-pipeline-build-order). dbt naming rules are in [CLAUDE.md](../CLAUDE.md#dbt-conventions).
+Build order, stage contracts, and the scoring formula are in the [Implementation Plan](../Docs/ASOT/RigRoom-Implementation-Plan.md#data-pipeline-build-order). dbt naming rules are in [CLAUDE.md](../CLAUDE.md#dbt-conventions).
 
 **Never write OSM-derived (share-alike) data into resale tables.** Every row keeps the license of its `source`.

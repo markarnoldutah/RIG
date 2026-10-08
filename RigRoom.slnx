@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RigRoom.Domain/RigRoom.Domain.csproj" />
+    <Project Path="src/RigRoom.Contracts/RigRoom.Contracts.csproj" />
+    <Project Path="src/RigRoom.ApiClient/RigRoom.ApiClient.csproj" />
+    <Project Path="src/RigRoom.Data/RigRoom.Data.csproj" />
+    <Project Path="src/RigRoom.Api/RigRoom.Api.csproj" />
+    <Project Path="src/RigRoom.Mobile/RigRoom.Mobile.csproj" />
+    <Project Path="src/RigRoom.Web/RigRoom.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RigRoom.Domain.Tests/RigRoom.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

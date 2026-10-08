@@ -8,9 +8,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | Document | Use it when |
 | --- | --- |
-| [Big-Rig-Pullout-Map-Product-and-Data-Brief.md](Docs/ASOT/Big-Rig-Pullout-Map-Product-and-Data-Brief.md) | You need to remember what this is, the data sources, or the scoring model |
-| [Big-Rig-Pullout-Map-PRD.md](Docs/ASOT/Big-Rig-Pullout-Map-PRD.md) | You're writing code. **If a requirement isn't here, it isn't in scope** — and an FR is only in scope for the release it is tagged with (R0, R1, …) |
-| [Big-Rig-Pullout-Map-Implementation-Plan.md](Docs/ASOT/Big-Rig-Pullout-Map-Implementation-Plan.md) | You're deciding what to do next, sequencing milestones, or need a default for an open decision |
+| [RigRoom-Product-and-Data-Brief.md](Docs/ASOT/RigRoom-Product-and-Data-Brief.md) | You need to remember what this is, the data sources, or the scoring model |
+| [RigRoom-PRD.md](Docs/ASOT/RigRoom-PRD.md) | You're writing code. **If a requirement isn't here, it isn't in scope** — and an FR is only in scope for the release it is tagged with (R0, R1, …) |
+| [RigRoom-Implementation-Plan.md](Docs/ASOT/RigRoom-Implementation-Plan.md) | You're deciding what to do next, sequencing milestones, or need a default for an open decision |
 
 One authoritative home per fact. A document earns its place by answering a question someone actually asks; register a new one in this table and in `.github/copilot-instructions.md` on the same commit.
 
@@ -50,23 +50,23 @@ Do not commit issue work directly to `main`. If the branch already exists, check
 
 ## Repo Layout
 
-One monorepo holds the .NET solution, the Python pipeline, dbt, and Bicep, so one PR can change a contract and both its producer and consumer. The repo root is the plan's `bigrig/` folder, and the plan's `docs/` is `Docs/`. Use the **SLNX** solution format (`dotnet` CLI handles it; older `dotnet sln` subcommands may not).
+One monorepo holds the .NET solution, the Python pipeline, dbt, and Bicep, so one PR can change a contract and both its producer and consumer. The repo root is the plan's `rigroom/` folder, and the plan's `docs/` is `Docs/`. Use the **SLNX** solution format (`dotnet` CLI handles it; older `dotnet sln` subcommands may not).
 
 | Path | Role | References |
 | --- | --- | --- |
-| `src/BigRig.Domain` | Rig profile, rig-fit rule, confidence labels, linear referencing (NetTopologySuite). **Zero infra dependencies** (guarded by `DomainDependencyTests`). | — |
-| `src/BigRig.Contracts` | DTOs + validation shared by API, MAUI, and Blazor | — |
-| `src/BigRig.ApiClient` | Typed HTTP client, offline outbox interfaces | Contracts |
-| `src/BigRig.Data` | EF Core + NetTopologySuite, migrations | Domain |
-| `src/BigRig.Api` | ASP.NET Core 10 **minimal APIs**, one route group per feature | Domain, Contracts, Data |
-| `src/BigRig.Mobile` | .NET MAUI, XAML + CommunityToolkit.Mvvm, Mapsui; `net10.0-android` + `net10.0-ios` | Domain, Contracts, ApiClient |
-| `src/BigRig.Web` | Blazor WASM: admin queue (R0), trip planner (R1); MapLibre via JS interop | Contracts, ApiClient |
+| `src/RigRoom.Domain` | Rig profile, rig-fit rule, confidence labels, linear referencing (NetTopologySuite). **Zero infra dependencies** (guarded by `DomainDependencyTests`). | — |
+| `src/RigRoom.Contracts` | DTOs + validation shared by API, MAUI, and Blazor | — |
+| `src/RigRoom.ApiClient` | Typed HTTP client, offline outbox interfaces | Contracts |
+| `src/RigRoom.Data` | EF Core + NetTopologySuite, migrations | Domain |
+| `src/RigRoom.Api` | ASP.NET Core 10 **minimal APIs**, one route group per feature | Domain, Contracts, Data |
+| `src/RigRoom.Mobile` | .NET MAUI, XAML + CommunityToolkit.Mvvm, Mapsui; `net10.0-android` + `net10.0-ios` | Domain, Contracts, ApiClient |
+| `src/RigRoom.Web` | Blazor WASM: admin queue (R0), trip planner (R1); MapLibre via JS interop | Contracts, ApiClient |
 | `pipeline/` | Python: `ingest/`, `candidates/`, `imagery/`, `terrain/`, `packs/`; `dbt/` for scoring | — |
 | `infra/` | Bicep modules + per-environment parameter files | — |
-| `tests/` | .NET unit + integration tests (Testcontainers PostGIS); `BigRig.{Project}.Tests` | Project under test |
+| `tests/` | .NET unit + integration tests (Testcontainers PostGIS); `RigRoom.{Project}.Tests` | Project under test |
 | `Docs/` | `ASOT/` canon, `ADR/`, field protocol, plans | — |
 
-Root build files: `BigRig.slnx` (everything), `BigRig.NoMobile.slnf` (everything except `BigRig.Mobile`, for CI and machines without the `maui` workload), `global.json` (SDK pin + MTP test runner), `Directory.Build.props` (nullable, implicit usings, C# 14, code style enforced in build). Target frameworks stay in each csproj because Mobile multi-targets.
+Root build files: `RigRoom.slnx` (everything), `RigRoom.NoMobile.slnf` (everything except `RigRoom.Mobile`, for CI and machines without the `maui` workload), `global.json` (SDK pin + MTP test runner), `Directory.Build.props` (nullable, implicit usings, C# 14, code style enforced in build). Target frameworks stay in each csproj because Mobile multi-targets.
 
 Mobile references Domain because drive mode runs the rig-fit rule and route projection on the device with no network.
 
@@ -111,7 +111,7 @@ Target: .NET 10, C# 14, nullable enabled, implicit usings enabled. Always check 
 ### Entities and DTOs
 
 - Entities inherit an abstract `EntityBase`. Identity fields are `init`-only (`Id`, `CreatedAtUtc`, `CreatedByUserId`); `MarkAsUpdated(userId)` stamps `UpdatedAtUtc` / `UpdatedByUserId`.
-- DTOs live in `BigRig.Contracts`; use `record` types. Naming: `{Entity}CreateRequestDto`, `{Entity}UpdateRequestDto`, `{Entity}SearchRequestDto`, `{Entity}DetailResponseDto`, `{Entity}SummaryResponseDto`.
+- DTOs live in `RigRoom.Contracts`; use `record` types. Naming: `{Entity}CreateRequestDto`, `{Entity}UpdateRequestDto`, `{Entity}SearchRequestDto`, `{Entity}DetailResponseDto`, `{Entity}SummaryResponseDto`.
 - `PagedResult<T>` is a sealed record (`Page`, `PageSize`, `TotalCount`, `Items`).
 - **Never expose entity types in API responses.**
 
@@ -141,7 +141,7 @@ dbt lives in `pipeline/dbt/` (dbt-postgres) and turns `evidence` into scores. It
 ### Validation
 
 - Guard clauses in every service method for required parameters.
-- Static validator classes for complex multi-field rules (in `BigRig.Contracts` so MAUI and Blazor share them).
+- Static validator classes for complex multi-field rules (in `RigRoom.Contracts` so MAUI and Blazor share them).
 - Block dangerous characters (`<`, `>`, `;`, `'`, `"`, `\`, `\0`) in free-text search inputs. Enforce max string lengths; page size cap is **100**.
 - **422** for validation errors, **400** for unparsable input.
 
@@ -212,10 +212,10 @@ In this mode, pass a project with `--project` and a solution with `--solution` (
 Development is on macOS (zsh, VS Code).
 
 ```bash
-dotnet restore BigRig.slnx
-dotnet build BigRig.slnx --configuration Release              # needs the maui workload + platform SDKs
-dotnet build BigRig.NoMobile.slnf --configuration Release     # everything except Mobile
-dotnet test --solution BigRig.NoMobile.slnf --configuration Release
+dotnet restore RigRoom.slnx
+dotnet build RigRoom.slnx --configuration Release              # needs the maui workload + platform SDKs
+dotnet build RigRoom.NoMobile.slnf --configuration Release     # everything except Mobile
+dotnet test --solution RigRoom.NoMobile.slnf --configuration Release
 dotnet test --project tests/<Project>/<Project>.csproj --configuration Release --no-build -- --coverage --coverage-output-format cobertura
 dotnet test --project tests/<Project>/<Project>.csproj --configuration Release --no-build -- --filter-class "*.SomeTests"
 ```
